@@ -30,18 +30,12 @@ type (
 	EdgeStackConfig struct {
 		Name        string
 		FileContent string
-		Prune       bool
 	}
 
 	// HostInfo is the representation of the collection of host information
 	HostInfo struct {
 		PCIDevices    []PciDevice
 		PhysicalDisks []PhysicalDisk
-	}
-
-	// KubernetesDeployer represents a service to deploy a manifest inside a Kubernetes endpoint
-	KubernetesDeployer interface {
-		Deploy(token, data string, namespace string) ([]byte, error)
 	}
 
 	// KubernetesRuntimeConfiguration represents the runtime configuration of an agent running on the Kubernetes platform
@@ -136,12 +130,9 @@ type (
 		GetServiceNameFromDockerEngine(containerName string) (string, error)
 	}
 
-	// DockerStackService is a service used to deploy and remove Docker stacks
-	DockerStackService interface {
-		Login() error
-		Logout() error
-		Deploy(name, stackFileContent string, prune bool) error
-		Remove(name string) error
+	Deployer interface {
+		Deploy(name string, filePaths []string, prune bool) error
+		Remove(name string, filePaths []string) error
 	}
 
 	// KubernetesInfoService is used to retrieve information from a Kubernetes environment.
@@ -171,11 +162,6 @@ type (
 	SystemService interface {
 		GetDiskInfo() ([]PhysicalDisk, error)
 		GetPciDevices() ([]PciDevice, error)
-	}
-
-	// TLSService is used to create TLS certificates to use enable HTTPS.
-	TLSService interface {
-		GenerateCertsForHost(host string) error
 	}
 )
 

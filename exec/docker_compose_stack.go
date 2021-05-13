@@ -39,13 +39,13 @@ func (service *DockerComposeStackService) Logout() error {
 }
 
 // Deploy executes the docker stack deploy command.
-func (service *DockerComposeStackService) Deploy(name, stackFilePath string, prune bool) error {
-	_, err := service.wrapper.Up([]string{stackFilePath}, "", name, "", "")
+func (service *DockerComposeStackService) Deploy(name string, filePaths []string, prune bool) error {
+	_, err := service.wrapper.Up(filePaths, "", name, "", "")
 	return err
 }
 
 // Remove executes the docker stack rm command.
-func (service *DockerComposeStackService) Remove(name string) error {
-	_, err := service.wrapper.Down([]string{""}, "", name)
+func (service *DockerComposeStackService) Remove(name string, filePaths []string) error {
+	_, err := service.wrapper.Down(filePaths, "", name)
 	return err
 }

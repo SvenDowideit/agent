@@ -33,11 +33,11 @@ func (manager *DockerComposeStackService) Logout() error {
 	return nil
 }
 
-func (manager *DockerComposeStackService) Deploy(name, stackFilePath string, prune bool) error {
+func (manager *DockerComposeStackService) Deploy(name string, filePaths []string, prune bool) error {
 
 	proj, err := docker.NewProject(&ctx.Context{
 		Context: project.Context{
-			ComposeFiles: []string{stackFilePath},
+			ComposeFiles: filePaths,
 
 			ProjectName: name,
 		},
@@ -49,7 +49,7 @@ func (manager *DockerComposeStackService) Deploy(name, stackFilePath string, pru
 	return proj.Up(context.Background(), options.Up{})
 }
 
-func (manager *DockerComposeStackService) Remove(name string) error {
+func (manager *DockerComposeStackService) Remove(name string, filePaths []string) error {
 	proj, err := docker.NewProject(&ctx.Context{
 		Context: project.Context{
 			ProjectName: name,

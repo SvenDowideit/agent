@@ -38,7 +38,13 @@ func (service *DockerSwarmStackService) Logout() error {
 }
 
 // Deploy executes the docker stack deploy command.
-func (service *DockerSwarmStackService) Deploy(name, stackFilePath string, prune bool) error {
+func (service *DockerSwarmStackService) Deploy(name string, filePaths []string, prune bool) error {
+	if len(filePaths) == 0 {
+		return errors.New("missing file paths")
+	}
+
+	stackFilePath := filePaths[0]
+
 	command := service.prepareDockerCommand(service.binaryPath)
 
 	args := []string{}
@@ -53,7 +59,7 @@ func (service *DockerSwarmStackService) Deploy(name, stackFilePath string, prune
 }
 
 // Remove executes the docker stack rm command.
-func (service *DockerSwarmStackService) Remove(name string) error {
+func (service *DockerSwarmStackService) Remove(name string, filePaths []string) error {
 	command := service.prepareDockerCommand(service.binaryPath)
 	args := []string{"stack", "rm", name}
 	return runCommandAndCaptureStdErr(command, args, "")

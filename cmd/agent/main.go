@@ -19,6 +19,7 @@ import (
 	"github.com/portainer/agent/net"
 	"github.com/portainer/agent/os"
 	cluster "github.com/portainer/agent/serf"
+	"github.com/portainer/libcrypto"
 )
 
 func main() {
@@ -116,7 +117,7 @@ func main() {
 	// !Docker
 
 	// Kubernetes
-	var kubernetesDeployer agent.KubernetesDeployer
+	var kubernetesDeployer *exec.KubernetesDeployer
 	if containerPlatform == agent.PlatformKubernetes {
 		log.Println("[INFO] [main] [message: Agent running on Kubernetes platform]")
 		kubeClient, err = kubernetes.NewKubeClient()
@@ -163,9 +164,7 @@ func main() {
 	signatureService := crypto.NewECDSAService(options.SharedSecret)
 
 	if !options.EdgeMode {
-		tlsService := crypto.TLSService{}
-
-		err := tlsService.GenerateCertsForHost(advertiseAddr)
+		err := libcrypto.GenerateCertsForHost(advertiseAddr, advertiseAddr, agent.TLSCertPath, agent.TLSKeyPath)
 		if err != nil {
 			log.Fatalf("[ERROR] [main,tls] [message: Unable to generate self-signed certificates] [error: %s]", err)
 		}
